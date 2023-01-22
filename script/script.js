@@ -1,73 +1,97 @@
 const getComputerChoice = () => {
   let randomComputerChoice = Math.round(Math.random() * (3 - 1)) + 1;
+  switch (randomComputerChoice) {
+    case 1:
+      return "rock";
+      break;
 
-  if (randomComputerChoice === 1) {
-    return "rock";
-  } else if (randomComputerChoice === 2) {
-    return "paper";
-  } else return "scissors";
+    case 2:
+      return "paper";
+      break;
+
+    case 3:
+      return "scissors";
+      break;
+  }
 };
 
 function playRound(playerSelection, computerSelection) {
-  let correctUserInput = validationOfUserInput(playerSelection);
-
   switch (true) {
-    case correctUserInput === computerSelection:
-      return `It's a Draw!`;
+    case playerSelection === computerSelection:
+      return 0; // It's a draw
       break;
 
-    case correctUserInput === "rock" && computerSelection === "scissors":
-      return `You win! Rock beats scissors`;
+    case playerSelection === "rock" && computerSelection === "scissors":
+      return 1; // Player win
       break;
 
-    case correctUserInput === "rock" && computerSelection === "paper":
-      return `You lose! Paper beats Rock`;
+    case playerSelection === "rock" && computerSelection === "paper":
+      return 2; // Computer win
       break;
 
-    case correctUserInput === "paper" && computerSelection === "rock":
-      return `You win! Paper beats Rock`;
+    case playerSelection === "paper" && computerSelection === "rock":
+      return 1;
       break;
 
-    case correctUserInput === "paper" && computerSelection === "scissors":
-      return `You lose! Scissors beats Paper`;
+    case playerSelection === "paper" && computerSelection === "scissors":
+      return 2;
       break;
 
-    case correctUserInput === "scissors" && computerSelection === "paper":
-      return `You win! Scissors beats Paper`;
+    case playerSelection === "scissors" && computerSelection === "paper":
+      return 1;
       break;
 
-    case correctUserInput === "scissors" && computerSelection === "rock":
-      return `You lose! Rock beats Scissors`;
+    case playerSelection === "scissors" && computerSelection === "rock":
+      return 2;
       break;
-
-    default:
-      return correctUserInput;
   }
 }
 
-function getPlayerChoice() {
-  let playerChoice = prompt("Select and type one of: Rock, Paper, Scissors");
-  return playerChoice;
-}
+function game(e) {
+  finalResult.textContent = "";
+  let playerChoice = this.dataset.choice;
+  let computerChoice = getComputerChoice();
+  let oneGame = playRound(playerChoice, computerChoice);
 
-function validationOfUserInput(playerSelection) {
-  let lowerCasePlayerInput = playerSelection.toLowerCase();
+  switch (oneGame) {
+    case 0:
+      resultOfOneGame.textContent = `It's a draw!`;
+      gameScore.textContent = `${playerCounter} : ${computerCounter}`;
+      break;
 
-  if (
-    lowerCasePlayerInput === "rock" ||
-    lowerCasePlayerInput === "paper" ||
-    lowerCasePlayerInput === "scissors"
-  ) {
-    return lowerCasePlayerInput;
-  } else return `Wrong choice!`;
-}
+    case 1:
+      resultOfOneGame.textContent = `You win this round!`;
+      playerCounter++;
+      gameScore.textContent = `${playerCounter} : ${computerCounter}`;
+      break;
 
-function game() {
-  for (let i = 0; i < 5; i++) {
-    const playerSelection = getPlayerChoice();
-    const computerSelection = getComputerChoice();
-    console.log(playRound(playerSelection, computerSelection));
+    case 2:
+      resultOfOneGame.textContent = `Computer win this round!`;
+      computerCounter++;
+      gameScore.textContent = `${playerCounter} : ${computerCounter}`;
+      break;
+  }
+
+  if (playerCounter === 5) {
+    finalResult.textContent = `You win the whole game!`;
+    playerCounter = 0;
+    computerCounter = 0;
+    gameScore.textContent = "";
+    resultOfOneGame.textContent = "";
+  } else if (computerCounter === 5) {
+    finalResult.textContent = `Computer win the whole game!`;
+    playerCounter = 0;
+    computerCounter = 0;
+    gameScore.textContent = "";
+    resultOfOneGame.textContent = "";
   }
 }
 
-game();
+const buttons = document.querySelectorAll(".btn");
+const resultOfOneGame = document.querySelector(".result_game");
+const gameScore = document.querySelector(".score");
+const finalResult = document.querySelector(".final_result");
+let playerCounter = 0;
+let computerCounter = 0;
+
+buttons.forEach((button) => button.addEventListener("click", game));
